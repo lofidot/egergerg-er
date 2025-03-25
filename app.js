@@ -1,4 +1,3 @@
-
 // Video Stumble - Main JavaScript for Webflow Integration
 // This file contains the core functionality for the Video Stumble application
 
@@ -16,6 +15,8 @@ let stumbleButton;
 let shareButton;
 let loadingSpinner;
 let toastContainer;
+let playButton;
+let videoTitleOverlay;
 
 // State
 let currentVideo = null;
@@ -34,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
   shareButton = document.getElementById('share-button');
   loadingSpinner = document.getElementById('loading-spinner');
   toastContainer = document.getElementById('toast-container');
+  playButton = document.getElementById('play-button');
+  videoTitleOverlay = document.getElementById('video-title-overlay');
 
   // Check if we're on the home page or video page
   const isHomePage = !window.location.pathname.includes('/video');
@@ -49,6 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
   if (videoThumbnail) {
     videoThumbnail.addEventListener('click', playVideo);
+  }
+  
+  if (playButton) {
+    playButton.addEventListener('click', playVideo);
   }
   
   // Initialize the page based on URL parameters
@@ -90,8 +97,13 @@ async function initializePage(isHomePage) {
 }
 
 // Play the video when thumbnail is clicked
-function playVideo() {
+function playVideo(e) {
   if (!currentVideo) return;
+  
+  // Stop event propagation to prevent double-playing
+  if (e) {
+    e.stopPropagation();
+  }
   
   const iframe = document.createElement('iframe');
   iframe.setAttribute('src', `https://www.youtube.com/embed/${currentVideo.video_id}?autoplay=1`);
@@ -100,6 +112,9 @@ function playVideo() {
   iframe.setAttribute('allowfullscreen', 'true');
   iframe.style.width = '100%';
   iframe.style.height = '100%';
+  iframe.style.position = 'absolute';
+  iframe.style.top = '0';
+  iframe.style.left = '0';
   
   // Clear the container and insert the iframe
   videoContainer.innerHTML = '';
@@ -113,6 +128,29 @@ async function handleStumble() {
   // Add pressed effect
   stumbleButton.classList.add('pressed');
   setTimeout(() => stumbleButton.classList.remove('pressed'), 300);
+  
+  // Clear the current video content
+  videoContainer.innerHTML = '';
+  
+  // Re-add the thumbnail elements
+  videoContainer.innerHTML = `
+    <img id="video-thumbnail" class="video-thumbnail" src="https://img.youtube.com/vi/placeholder/maxresdefault.jpg" alt="Video Thumbnail">
+    <div id="play-button" class="play-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div class="video-title-overlay" id="video-title-overlay"></div>
+    <div id="loading-spinner" class="loading-spinner"></div>
+  `;
+  
+  // Re-get the elements
+  videoThumbnail = document.getElementById('video-thumbnail');
+  playButton = document.getElementById('play-button');
+  loadingSpinner = document.getElementById('loading-spinner');
+  videoTitleOverlay = document.getElementById('video-title-overlay');
+  
+  // Re-attach event listeners
+  videoThumbnail.addEventListener('click', playVideo);
+  playButton.addEventListener('click', playVideo);
   
   await fetchRandomVideo();
 }
@@ -194,7 +232,17 @@ function updateUI(video) {
   if (videoThumbnail) {
     videoThumbnail.src = `https://img.youtube.com/vi/${video.video_id}/maxresdefault.jpg`;
     videoThumbnail.alt = video.title;
+    videoThumbnail.onerror = function() {
+      if (videoThumbnail.src !== `https://img.youtube.com/vi/${video.video_id}/hqdefault.jpg`) {
+        videoThumbnail.src = `https://img.youtube.com/vi/${video.video_id}/hqdefault.jpg`;
+      }
+    };
     videoContainer.style.display = 'block';
+  }
+  
+  // Set video title in overlay
+  if (videoTitleOverlay) {
+    videoTitleOverlay.textContent = video.title;
   }
   
   // Set video info
