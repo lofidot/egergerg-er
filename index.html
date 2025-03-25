@@ -1,0 +1,52 @@
+
+<!-- Video Stumble - HTML for Webflow Home Page Integration -->
+
+<div class="video-stumble-container">
+  <!-- Header -->
+  <header class="header">
+    <h1>Video Stumble</h1>
+    <p>Discover intellectual YouTube videos with one click</p>
+  </header>
+  
+  <!-- Video Player with Thumbnail -->
+  <div id="video-container" class="video-container">
+    <img id="video-thumbnail" class="video-thumbnail" src="https://img.youtube.com/vi/placeholder/maxresdefault.jpg" alt="Video Thumbnail">
+    <div class="play-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div id="loading-spinner" class="loading-spinner"></div>
+  </div>
+  
+  <!-- Video Information -->
+  <div class="video-info">
+    <h2 id="video-title" class="video-title">Loading video...</h2>
+    <p id="channel-name" class="channel-name"></p>
+    <p id="video-description" class="video-description"></p>
+  </div>
+  
+  <!-- Fixed Buttons -->
+  <button id="stumble-button" class="button stumble-button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </svg>
+    Stumble Next Video
+  </button>
+  
+  <button id="share-button" class="button share-button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="5" r="3"/>
+      <circle cx="6" cy="12" r="3"/>
+      <circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+  </button>
+  
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+</div>
+
+<!-- Link to the CSS and JavaScript files -->
+<link rel="stylesheet" href="/app.css">
+<script src="/app.js"></script>
